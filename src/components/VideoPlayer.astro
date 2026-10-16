@@ -10,10 +10,10 @@ if (!id) throw new Error(`Unsupported video URL: ${url}`);
   <div class="video-frame">
     <img src={imageUrl(poster, 1600)} alt={alt} width="1600" height="900" fetchpriority="high" />
     <button class="play-button" type="button" aria-label={`Play ${title}`} hidden>
-      <span class="play-icon" aria-hidden="true">▶</span><span>Play film</span>
+      <span class="play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" focusable="false"><path d="M8 5v14l11-7z" /></svg></span><span>Play film</span>
     </button>
   </div>
-  <p class="video-note">Playback loads YouTube when you press play. <a href={url} target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></p>
+  <p class="video-note">Playback loads YouTube when you press play. <a href={url} target="_blank" rel="noopener noreferrer">Watch on YouTube</a></p>
 </portfolio-video>
 <script>
   class PortfolioVideo extends HTMLElement {

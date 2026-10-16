@@ -10,7 +10,7 @@ const categories = [...new Set(projects.map(project => project.category))];
     <h1>{settings.tagline}</h1>
     <div class="hero-bottom">
       <p>{settings.introduction}</p>
-      <a class="text-link" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
+      <a class="text-link" href="#work">Explore the work</a>
     </div>
   </section>
 
@@ -26,7 +26,6 @@ const categories = [...new Set(projects.map(project => project.category))];
       {projects.map((project, index) => <article class:list={['project-card', {'project-card-lead': index === 0}]} data-category={project.category}>
         <a href={`/work/${project.slug}/`} class="project-image" aria-label={`View ${project.title}`}>
           <img src={imageUrl(project.thumbnail.url, index === 0 ? 1600 : 900)} alt={project.thumbnail.alt} width="1600" height="900" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : 'auto'} />
-          <span class="project-open" aria-hidden="true">↗</span>
           {index === 0 && <span class="image-label">Featured film</span>}
         </a>
         <div class="project-caption">
@@ -52,7 +51,7 @@ const categories = [...new Set(projects.map(project => project.category))];
   <section class="contact-section wrap" id="contact" aria-labelledby="contact-heading">
     <p class="eyebrow">Have something in mind?</p>
     <h2 id="contact-heading">Let’s make<br /><em>something move.</em></h2>
-    <a class="contact-link" href={`mailto:${settings.email}`}>{settings.email} <span aria-hidden="true">↗</span></a>
+    <a class="contact-link" href={`mailto:${settings.email}`}>{settings.email}</a>
   </section>
 </Layout>
 
