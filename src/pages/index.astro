@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {getContent, imageUrl} from '../lib/content';
+const {settings, projects, demo} = await getContent();
+const categories = [...new Set(projects.map(project => project.category))];
+---
+<Layout title={`${settings.name} — Films & stories`} description={settings.introduction} settings={settings} demo={demo}>
+  <section class="hero wrap">
+    <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Independent filmmaking</p>
+    <h1>{settings.tagline}</h1>
+    <div class="hero-bottom">
+      <p>{settings.introduction}</p>
+      <a class="text-link" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
+    </div>
+  </section>
+
+  <section class="work-section wrap" id="work" aria-labelledby="work-heading">
+    <div class="section-heading">
+      <h2 id="work-heading">Selected work <sup>({String(projects.length).padStart(2, '0')})</sup></h2>
+      {categories.length > 1 && <div class="filters" role="group" aria-label="Filter projects" hidden>
+        <button type="button" data-filter="" aria-pressed="true">All work</button>
+        {categories.map(category => <button type="button" data-filter={category} aria-pressed="false">{category}</button>)}
+      </div>}
+    </div>
+    <div class="project-grid">
+      {projects.map((project, index) => <article class:list={['project-card', {'project-card-lead': index === 0}]} data-category={project.category}>
+        <a href={`/work/${project.slug}/`} class="project-image" aria-label={`View ${project.title}`}>
+          <img src={imageUrl(project.thumbnail.url, index === 0 ? 1600 : 900)} alt={project.thumbnail.alt} width="1600" height="900" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : 'auto'} />
+          <span class="project-open" aria-hidden="true">↗</span>
+          {index === 0 && <span class="image-label">Featured film</span>}
+        </a>
+        <div class="project-caption">
+          <h3><a href={`/work/${project.slug}/`}>{project.title}</a></h3>
+          <p>{project.category}<span aria-hidden="true"> / </span>{project.year}</p>
+        </div>
+      </article>)}
+    </div>
+    {projects.length === 0 && <p class="empty-state">New films are on the way. Get in touch to talk about your next project.</p>}
+    <p class="sr-only" id="filter-status" aria-live="polite"></p>
+  </section>
+
+  <section class="about-section wrap" id="about" aria-labelledby="about-heading">
+    <p class="eyebrow">Behind the lens</p>
+    <div class="about-copy">
+      <h2 id="about-heading">A story starts<br />with a connection.</h2>
+      <p class="preserve-lines">{settings.about}</p>
+      {settings.location && <p class="muted">{settings.location}</p>}
+      <ul class="services">{settings.services.map(service => <li>{service}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="contact-section wrap" id="contact" aria-labelledby="contact-heading">
+    <p class="eyebrow">Have something in mind?</p>
+    <h2 id="contact-heading">Let’s make<br /><em>something move.</em></h2>
+    <a class="contact-link" href={`mailto:${settings.email}`}>{settings.email} <span aria-hidden="true">↗</span></a>
+  </section>
+</Layout>
+
+<script>
+  const filters = document.querySelector<HTMLElement>('.filters');
+  const cards = [...document.querySelectorAll<HTMLElement>('.project-card')];
+  if (filters) {
+    filters.hidden = false;
+    filters.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-filter]');
+      if (!button) return;
+      const category = button.dataset.filter;
+      filters.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      let count = 0;
+      cards.forEach(card => {
+        card.hidden = !!category && card.dataset.category !== category;
+        if (!card.hidden) count++;
+      });
+      const status = document.querySelector('#filter-status');
+      if (status) status.textContent = `${count} ${count === 1 ? 'project' : 'projects'} shown`;
+    });
+  }
+</script>

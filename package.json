@@ -1,0 +1,31 @@
+{
+  "name": "geo-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "studio"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check && tsc --noEmit -p studio/tsconfig.json",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "studio": "npm run dev --workspace studio",
+    "studio:build": "npm run build --workspace studio",
+    "studio:deploy": "npm run deploy --workspace studio"
+  },
+  "dependencies": {
+    "@sanity/client": "8.9.0",
+    "astro": "7.4.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/node": "26.6.5",
+    "typescript": "6.0.3"
+  }
+}

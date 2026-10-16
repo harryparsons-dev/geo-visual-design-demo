@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {getContent} from '../lib/content';
+const {settings, demo} = await getContent();
+---
+<Layout title={`Page not found — ${settings.name}`} description="This page could not be found." settings={settings} demo={demo}>
+  <section class="wrap hero">
+    <p class="eyebrow">404 / Out of frame</p>
+    <h1>Lost the shot.</h1>
+    <a class="text-link" href="/">Back to the portfolio ↗</a>
+  </section>
+</Layout>
