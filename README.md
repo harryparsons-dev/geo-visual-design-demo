@@ -52,7 +52,30 @@ Sanity Free provides Administrator and Viewer roles; the client needs Administra
 
 Do not add the website's `dist` output and Studio's `dist` output to the same Cloudflare project. They are separate applications.
 
-## Deploy the website to Cloudflare Pages
+## Deploy using Cloudflare Workers Builds
+
+If Cloudflare runs `npx wrangler deploy`, you have created a **Workers** project. The included `wrangler.jsonc` explicitly points Wrangler to the generated `dist/` directory, bypassing framework detection at the npm workspace root. This deploys static files only; it does not enable server rendering or require an Astro adapter.
+
+Use these repository build settings:
+
+| Setting | Value |
+| --- | --- |
+| Root directory | Repository root |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Non-production deploy command, if enabled | `npx wrangler versions upload` |
+| `NODE_VERSION` | `24` |
+| `SANITY_PROJECT_ID` | Your project ID |
+| `SANITY_DATASET` | `production` |
+| `SITE_URL` | Your final public origin |
+
+Set environment variables under **Settings → Build** so Astro can access them during the build. A static-only deployment has no application runtime that can read runtime secrets. Match the `name` in `wrangler.jsonc` (`geo-portfolio` by default) to the Worker name in your Cloudflare dashboard before deployment. Do not set the repository root to `studio`: that is the editing application, not the website.
+
+For automatic rebuilding, create a **Workers Builds deploy hook** under your Worker's build settings and use that URL in the Sanity webhook described below. The Sanity trigger/filter configuration is the same as for Pages; the deploy hook must belong to the hosting project you actually use.
+
+The checked-in configuration uses `404-page` handling so unknown routes use the generated `404.html`. No Worker script or `main` entry point is needed for this static-only deployment.
+
+## Alternative: deploy the website to Cloudflare Pages
 
 1. Push this directory to a GitHub repository, including the generated lockfile. This starter does not create a repository or external accounts automatically.
 2. In Cloudflare, create a **Pages** project connected to that repository. Use these settings:
@@ -77,7 +100,7 @@ No Cloudflare adapter, Worker or Functions directory is needed: `output: 'static
 
 There is one small piece of account configuration to complete after both services exist:
 
-1. Cloudflare Pages → your project → **Settings → Builds & deployments → Deploy hooks**. Create a hook named `Sanity publish` targeting your production branch. Copy its URL.
+1. In your Cloudflare project's build settings, create a deploy hook named `Sanity publish` targeting your production branch. For **Workers**, use Workers Builds deploy hooks. For **Pages**, use **Settings → Builds & deployments → Deploy hooks**. Copy its URL.
 2. Sanity Manage → your project → **API → Webhooks → Create webhook**.
 3. Configure:
    - **URL:** the Cloudflare deploy hook URL.
